@@ -25,6 +25,7 @@ for year in range(2011, 2023):
         for column, index in zip(data.columns, data.index.tolist()):
             pass
            # print(index, column)
+    
     def clean_2014_os(row):
         linux_list = ["Linux", "Ubuntu", "Debian", "Mint", "Fedora"]
         if "Windows" in str(row):
@@ -54,38 +55,34 @@ for year in range(2011, 2023):
                 languages.append(value)
             return ";".join(languages)
 
-    def clean_2015_os(row):
-        linux_list = ["Other Linux", "Ubuntu", "Debian", "Mint", "Fedora"]
-        if "Windows" in str(row):
-            return "Windows"
-        elif str(row) in linux_list:
-            return "Linux"
-        elif str(row) == "Response":
-            return nan
-        else: return row     
+   
     
-    def clean_2015_os(row):
+    def clean_2015_2016_os(row):
         linux_list = ["Other Linux", "Ubuntu", "Debian", "Mint", "Fedora"]
         if "Windows" in str(row):
             return "Windows"
         elif str(row) in linux_list:
             return "Linux"
+        elif "Mac" in str(row):
+            return "MacOS"
         elif str(row) == "Response":
             return nan
         else: return row    
+    
     if year == 2015:
         data = read_csv(filepath_or_buffer = path.join(getcwd(), str(year)+".csv"), low_memory=False)
-        data = data.iloc[:, [0,1, 2, 6, 7, *[col for col in range(8,51)]]]
+        data = data.iloc[:, [0, 1, 2, 6, 7, *[col for col in range(8,51)]]]
         data["Languages"] = data.apply(lambda row: combine_languages(row), axis=1)
-        data["Desktop Operating System"] = data["Desktop Operating System"].apply(lambda row: clean_2015_os(row))
-        data = data.iloc[:, [*range(0, 5), 48]]
+        data["Desktop Operating System"] = data["Desktop Operating System"].apply(lambda row: clean_2015_2016_os(row))
+        data = data.iloc[:, [0, 2, 3, 48]]
         for column, index in zip(data.columns, data.index.tolist()):
             pass
             #print(index, column)
     
     if year == 2016:
         data = read_csv(filepath_or_buffer = path.join(getcwd(), str(year)+".csv"), low_memory=False)
-        data = data.iloc[:, [1, 4, 6, 18, 31]]
+        data = data.iloc[:, [1, 6, 18, 31]]
+        data["desktop_os"] = data["desktop_os"].apply(lambda row: clean_2015_2016_os(row))
         for column, index in zip(data.columns, data.index.tolist()):
             pass
             #print(index, column)
@@ -96,7 +93,7 @@ for year in range(2011, 2023):
         if "Windows" in str(row):
             cleaned_list_of_os.append("Windows")
         elif "Mac OS" in str(row):
-            cleaned_list_of_os.append("Mac OS")
+            cleaned_list_of_os.append("MacOS")
         elif "Linux" in str(row):
             cleaned_list_of_os.append("Linux")
         if cleaned_list_of_os:
@@ -114,6 +111,7 @@ for year in range(2011, 2023):
         for column, index in zip(data.columns, data.index.tolist()):
             pass
             #print(index, column)
+   
     def clean_2018_languages(row):
         languages = str(row)
         return languages.split(";")
@@ -122,10 +120,43 @@ for year in range(2011, 2023):
     if year == 2018:
         data = read_csv(filepath_or_buffer = path.join(getcwd(), str(year)+".csv"), low_memory=False)
         data = data.iloc[:, [3, 65,74,120, 124]]
-        data["LanguageWorkedWith"] = data["LanguageWorkedWith"].apply(lambda row: clean_2018_languages(row))
-        #print(data["Age"].value_counts())
+        #data["LanguageWorkedWith"] = data["LanguageWorkedWith"].apply(lambda row: clean_2018_languages(row))
         for column, index in zip(data.columns, data.index.tolist()):
             pass
             #print(index, column)
     
+    if year == 2019:
+        data = read_csv(filepath_or_buffer = path.join(getcwd(), str(year)+".csv"), low_memory=False)
+        data = data.iloc[:, [6, 43, 54, 78]]
+        data["OpSys"] = data["OpSys"].replace("Linux-based", "Linux")
+        #print(data.iloc[:, 2].value_counts())
+       
+        for column, index in zip(data.columns, data.index.tolist()):
+            pass
+            #print(index, column)
     
+    if year == 2020:
+        data = read_csv(filepath_or_buffer = path.join(getcwd(), str(year)+".csv"), low_memory=False)
+        data = data.iloc[:, [ 8, 17, 22, 41]]
+        data["OpSys"] = data["OpSys"].replace("Linux-based", "Linux")
+        #print(data["OpSys"].value_counts())
+        for column, index in zip(data.columns, data.index.tolist()):
+            pass
+            #print(index, column)
+    
+    if year == 2021:
+        data = read_csv(filepath_or_buffer = path.join(getcwd(), str(year)+".csv"), low_memory=False)
+        data = data.iloc[:, [3, 16, 18, 30, 39]]
+        data["OpSys"] = data["OpSys"].replace("Linux-based", "Linux")
+        #print(data["OpSys"].value_counts())
+        for column, index in zip(data.columns, data.index.tolist()):
+            pass
+            #print(index, column)
+    
+    if year == 2022:
+        data = read_csv(filepath_or_buffer = path.join(getcwd(), str(year)+".csv"), low_memory=False)
+        data = data.iloc[:, [15, 19,21, 33, 34, 50]]
+        #print(data.iloc[:, 4].value_counts())
+        for column, index in zip(data.columns, data.index.tolist()):
+            pass
+            #print(index, column)

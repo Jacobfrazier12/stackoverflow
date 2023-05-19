@@ -120,7 +120,7 @@ try:
             data = data.iloc[:, [0, 81]]
             data["Year"] = year
             data["OpSys"] = data.iloc[:, 1].apply(lambda row: clean_2013_os(row))
-            data["Country"] = data.iloc[:, 0].values
+            data["Country"] = data.iloc[:, 0].replace("United States of America", "United States").replace("Response", nan).values
             data["Languages"] = nan
             data["Databases"] = nan
             data["Gender"] = nan
@@ -149,7 +149,7 @@ try:
             data = data.iloc[:, [0, 67]]
             data["Year"] = year
             data["OpSys"] = data.iloc[:, 1].apply(lambda row: clean_2014_os(row))
-            data["Country"] = data.iloc[:, 0].values
+            data["Country"] = data.iloc[:, 0].replace("United States of America", "United States").values
             data["Languages"] = nan
             data["Databases"] = nan
             data["Gender"] = nan
@@ -190,6 +190,7 @@ try:
             data["Languages"] = data.apply(lambda row: combine_languages(row), axis=1)
             data["OpSys"] = data["Desktop Operating System"].apply(lambda row: clean_2015_2016_os(row))
             data["Databases"] = nan
+            data["Country"] = data["Country"].replace("United States of America", "United States").values
             data = data.iloc[:, [0, 2, 48,49, 50]]
             data_list.append(data)
             if path.exists(path.join(getcwd(), str(year)+".csv")):
@@ -206,7 +207,8 @@ try:
             data["Databases"] = nan
             data["Languages"] = data["programming_ability"]
             data["Gender"] = data["gender"]
-            data = data.iloc[:, [0, 4, 5, 6, 7]]
+            data["Country"] = data["country"].replace("United States of America", "United States").values
+            data = data.iloc[:, [4, 5, 6, 7, 8, 9]]
             data_list.append(data)
             if path.exists(path.join(getcwd(), str(year)+".csv")):
                 remove(path.join(getcwd(), str(year)+".csv"))
@@ -238,6 +240,7 @@ try:
             data["OpSys"] = data["HaveWorkedPlatform"].apply(lambda row: clean_2017_os(row))
             data["Languages"] = data["HaveWorkedLanguage"]
             data["Databases"] = nan
+            data["Country"] = data["Country"].replace("United States of America", "United States").values
             data = data.iloc[:, [0, 1, 4, 5, 6]]
             data["Year"] = year
             data_list.append(data)
@@ -259,6 +262,7 @@ try:
             data["Languages"] = data["LanguageWorkedWith"]
             data["OpSys"] = data["OperatingSystem"] 
             data["Databases"] = nan
+            data["Country"] = data["Country"].replace("United States of America", "United States").values
             data = data.iloc[:, [0, 3, 4, 5, 6]]
             data_list.append(data)
             if path.exists(path.join(getcwd(), str(year)+".csv")):
@@ -272,6 +276,7 @@ try:
             data["OpSys"] = data["OpSys"].replace("Linux-based", "Linux")
             data["Databases"] = nan
             data["Languages"] = data["LanguageWorkedWith"].values
+            data["Country"] = data["Country"].replace("United States of America", "United States").values
             data = data.iloc[:, [0, 2, 3, 4, 5]]
             data_list.append(data)
             if path.exists(path.join(getcwd(), str(year)+".csv")):
@@ -287,6 +292,7 @@ try:
             data["OpSys"] = data["OpSys"].replace("Linux-based", "Linux")
             data["Databases"] = nan
             data["Languages"] = data["LanguageWorkedWith"].values
+            data["Country"] = data["Country"].replace("United States of America", "United States").values
             data = data.iloc[:, [0, 1, 3, 4, 5]]
             data_list.append(data)
             if path.exists(path.join(getcwd(), str(year)+".csv")):
@@ -302,6 +308,7 @@ try:
             data["OpSys"] = data["OpSys"].replace("Linux-based", "Linux")
             data["Databases"] = data["DatabaseHaveWorkedWith"].values
             data["Languages"] = data["LanguageHaveWorkedWith"].values
+            data["Country"] = data["Country"].replace("United States of America", "United States").values
             data = data.iloc[:, [0, 3, 4, 5, 6]]
             data_list.append(data)
             if path.exists(path.join(getcwd(), str(year)+".csv")):
@@ -318,7 +325,7 @@ try:
             data["OpSys"] = data["OpSysPersonal use"]
             data["Databases"] = data["DatabaseHaveWorkedWith"].values
             data["Languages"] = data["LanguageHaveWorkedWith"].values
-           
+            data["Country"] = data["Country"].replace("United States of America", "United States").values
             data = data.iloc[:, [0, *range(5,9)]]
             data_list.append(data)
             if path.exists(path.join(getcwd(), str(year)+".csv")):
@@ -328,8 +335,13 @@ except FileNotFoundError as e:
     print(e)
 except AttributeError as e:
     print(e)            
-concat(data_list).to_csv(path_or_buf = save_path, index = False, mode = "w+")                   
-            
+data = concat(data_list)#.to_csv(path_or_buf = save_path, index = False, mode = "w+")
+data = data.loc[data.isna().mean(axis=1)<0.80]
+data["Languages"] = data["Languages"].str.split(";").explode(True)
+data = data[data[~"Languages"].dtype == "float64"]
+data["Databases"] = data["Databases"].str.split(";").explode(True)
+data["Gender"] = data["Gender"].str.split(";").explode(True).str.strip()
+data.to_csv(path_or_buf = save_path, index = False, mode = "w+")        
     
             
             

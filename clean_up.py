@@ -336,9 +336,6 @@ except FileNotFoundError as e:
 except AttributeError as e:
     print(e)            
 data = concat(data_list)
-data["Languages"] = data["Languages"].str.strip()
-data["Databases"] = data["Databases"].str.strip()
-data["Gender"] = data["Gender"].str.strip()
 data = data[to_numeric(data["Languages"], errors="coerce").isna()] 
 data.to_csv(path_or_buf = save_path, index = False, mode = "w+")        
     

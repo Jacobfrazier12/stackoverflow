@@ -2,7 +2,7 @@ from time import time
 from os import getcwd, path, remove, mkdir, listdir, walk
 from shutil import rmtree
 from zipfile import ZipFile
-from pandas import DataFrame, read_csv, concat, isna
+from pandas import DataFrame, read_csv, concat, isna, to_numeric
 from requests import get, exceptions
 import matplotlib as plt
 import re
@@ -335,12 +335,11 @@ except FileNotFoundError as e:
     print(e)
 except AttributeError as e:
     print(e)            
-data = concat(data_list)#.to_csv(path_or_buf = save_path, index = False, mode = "w+")
-data = data.loc[data.isna().mean(axis=1)<0.80]
-data["Languages"] = data["Languages"].str.split(";").explode(True)
-data = data[data[~"Languages"].dtype == "float64"]
-data["Databases"] = data["Databases"].str.split(";").explode(True)
-data["Gender"] = data["Gender"].str.split(";").explode(True).str.strip()
+data = concat(data_list)
+data["Languages"] = data["Languages"].str.strip()
+data["Databases"] = data["Databases"].str.strip()
+data["Gender"] = data["Gender"].str.strip()
+data = data[to_numeric(data["Languages"], errors="coerce").isna()] 
 data.to_csv(path_or_buf = save_path, index = False, mode = "w+")        
     
             

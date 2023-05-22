@@ -7,14 +7,14 @@ from requests import get, exceptions
 import matplotlib as plt
 import re
 import chardet
-from fake_useragent import UserAgent
 from numpy import nan
+import pycountry
 #This section downloads all the StackOverflow survey results.
-user_agent = UserAgent()
+
 
 for year in range(2013, 2023):
     try:
-        headers={"User-Agent": user_agent.firefox}
+        
         file_path = path.join(getcwd(), f"results_{year}.zip")
         
         if not path.exists(file_path) and not path.exists(path.join(getcwd(), str(year))):
@@ -120,7 +120,7 @@ try:
             data = data.iloc[:, [0, 81]]
             data["Year"] = year
             data["OpSys"] = data.iloc[:, 1].apply(lambda row: clean_2013_os(row))
-            data["Country"] = data.iloc[:, 0].replace("United States of America", "United States").replace("Response", nan).values
+            data["Country"] = data.iloc[:, 0].replace("Response", nan).values
             data["Languages"] = nan
             data["Databases"] = nan
             data["Gender"] = nan
@@ -149,7 +149,7 @@ try:
             data = data.iloc[:, [0, 67]]
             data["Year"] = year
             data["OpSys"] = data.iloc[:, 1].apply(lambda row: clean_2014_os(row))
-            data["Country"] = data.iloc[:, 0].replace("United States of America", "United States").values
+            data["Country"] = data.iloc[:, 0].values
             data["Languages"] = nan
             data["Databases"] = nan
             data["Gender"] = nan
@@ -190,7 +190,7 @@ try:
             data["Languages"] = data.apply(lambda row: combine_languages(row), axis=1)
             data["OpSys"] = data["Desktop Operating System"].apply(lambda row: clean_2015_2016_os(row))
             data["Databases"] = nan
-            data["Country"] = data["Country"].replace("United States of America", "United States").values
+            data["Country"] = data["Country"].values
             data = data.iloc[:, [0, 2, 48,49, 50]]
             data_list.append(data)
             if path.exists(path.join(getcwd(), str(year)+".csv")):
@@ -207,7 +207,7 @@ try:
             data["Databases"] = nan
             data["Languages"] = data["programming_ability"]
             data["Gender"] = data["gender"]
-            data["Country"] = data["country"].replace("United States of America", "United States").values
+            data["Country"] = data["country"].values
             data = data.iloc[:, [4, 5, 6, 7, 8, 9]]
             data_list.append(data)
             if path.exists(path.join(getcwd(), str(year)+".csv")):
@@ -240,7 +240,7 @@ try:
             data["OpSys"] = data["HaveWorkedPlatform"].apply(lambda row: clean_2017_os(row))
             data["Languages"] = data["HaveWorkedLanguage"]
             data["Databases"] = nan
-            data["Country"] = data["Country"].replace("United States of America", "United States").values
+            data["Country"] = data["Country"].values
             data = data.iloc[:, [0, 1, 4, 5, 6]]
             data["Year"] = year
             data_list.append(data)
@@ -262,7 +262,7 @@ try:
             data["Languages"] = data["LanguageWorkedWith"]
             data["OpSys"] = data["OperatingSystem"] 
             data["Databases"] = nan
-            data["Country"] = data["Country"].replace("United States of America", "United States").values
+            data["Country"] = data["Country"].values
             data = data.iloc[:, [0, 3, 4, 5, 6]]
             data_list.append(data)
             if path.exists(path.join(getcwd(), str(year)+".csv")):
@@ -276,7 +276,7 @@ try:
             data["OpSys"] = data["OpSys"].replace("Linux-based", "Linux")
             data["Databases"] = nan
             data["Languages"] = data["LanguageWorkedWith"].values
-            data["Country"] = data["Country"].replace("United States of America", "United States").values
+            data["Country"] = data["Country"].values
             data = data.iloc[:, [0, 2, 3, 4, 5]]
             data_list.append(data)
             if path.exists(path.join(getcwd(), str(year)+".csv")):
@@ -292,7 +292,7 @@ try:
             data["OpSys"] = data["OpSys"].replace("Linux-based", "Linux")
             data["Databases"] = nan
             data["Languages"] = data["LanguageWorkedWith"].values
-            data["Country"] = data["Country"].replace("United States of America", "United States").values
+            data["Country"] = data["Country"].values
             data = data.iloc[:, [0, 1, 3, 4, 5]]
             data_list.append(data)
             if path.exists(path.join(getcwd(), str(year)+".csv")):
@@ -308,7 +308,7 @@ try:
             data["OpSys"] = data["OpSys"].replace("Linux-based", "Linux")
             data["Databases"] = data["DatabaseHaveWorkedWith"].values
             data["Languages"] = data["LanguageHaveWorkedWith"].values
-            data["Country"] = data["Country"].replace("United States of America", "United States").values
+            data["Country"] = data["Country"].values
             data = data.iloc[:, [0, 3, 4, 5, 6]]
             data_list.append(data)
             if path.exists(path.join(getcwd(), str(year)+".csv")):
@@ -325,7 +325,7 @@ try:
             data["OpSys"] = data["OpSysPersonal use"]
             data["Databases"] = data["DatabaseHaveWorkedWith"].values
             data["Languages"] = data["LanguageHaveWorkedWith"].values
-            data["Country"] = data["Country"].replace("United States of America", "United States").values
+            data["Country"] = data["Country"].values
             data = data.iloc[:, [0, *range(5,9)]]
             data_list.append(data)
             if path.exists(path.join(getcwd(), str(year)+".csv")):
@@ -335,8 +335,23 @@ except FileNotFoundError as e:
     print(e)
 except AttributeError as e:
     print(e)            
+def standardized_country_name(row):
+    
+    try:
+        country = pycountry.countries.lookup(str(row)) 
+        return str(country.name)
+    except LookupError as e:
+        return row
+    except AttributeError as e:
+        return row
 data = concat(data_list)
 data = data[to_numeric(data["Languages"], errors="coerce").isna()] 
+data["Country"] = data["Country"].apply(lambda row: standardized_country_name(row))
+data["Languages"] = data["Languages"].str.replace(";", "\t").str.strip()
+
+data["Databases"] = data["Databases"].str.replace(";", "\t").str.strip()
+data["Gender"] = data["Gender"].str.replace(";", "\t").str.strip()
+data["OpSys"] = data["OpSys"].str.replace(r"BSD\/Unix|BSD", "BSD/UNIX", regex=True).str.replace(r"Linux-[A-Za-z]{1,}", "Linux", regex=True).str.replace(r"Other \(please specify\):", "Other", regex=True).str.replace(r"[A-Za-z]*\s[A-Za-z]*\s[A-Za-z]*\s[A-Za-z]*\s\(WSL\)", "Linux", regex=True).str.strip()
 data.to_csv(path_or_buf = save_path, index = False, mode = "w+")        
     
             

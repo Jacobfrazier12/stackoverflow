@@ -347,17 +347,20 @@ def standardized_country_name(row):
 data = concat(data_list)
 data = data[to_numeric(data["Languages"], errors="coerce").isna()] 
 data["Country"] = data["Country"].apply(lambda row: standardized_country_name(row))
-data["Languages"] = data["Languages"].str.replace(";", "\t").str.strip()
-
-data["Databases"] = data["Databases"].str.replace(";", "\t").str.strip()
-data["Gender"] = data["Gender"].str.replace(";", "\t").str.strip()
-data["OpSys"] = data["OpSys"].str.replace(r"BSD\/Unix|BSD", "BSD/UNIX", regex=True).str.replace(r"Linux-[A-Za-z]{1,}", "Linux", regex=True).str.replace(r"Other \(please specify\):", "Other", regex=True).str.replace(r"[A-Za-z]*\s[A-Za-z]*\s[A-Za-z]*\s[A-Za-z]*\s\(WSL\)", "Linux", regex=True).str.strip()
-for col in data.columns:
-    try:
-        data[col] = data[col].str.split("\t").explode(True)
-    except AttributeError as e:
-        pass
-
+data["Languages"] = data["Languages"].str.replace(";", "\t")
+data["Databases"] = data["Databases"].str.replace(";", "\t")
+data["Gender"] = data["Gender"].str.replace(";", "\t")
+data["Gender"] = data["Gender"].str.replace("Man", "Male").replace("Woman", "Female").replace("Transgender", "LGBTQ").replace("Non-binary, genderqueer, or gender non-conforming", "LGBTQ").replace("Gender non-conforming","LGBTQ").replace("Prefer not to say", "Other").replace("Prefer not to disclose", "Other").replace("Or, in your own words:", "Other")
+data["OpSys"] = data["OpSys"].str.replace(r"BSD\/Unix|BSD", "BSD/UNIX", regex=True).str.replace(r"Linux-[A-Za-z]{1,}", "Linux", regex=True).str.replace(r"Other \(please specify\):", "Other", regex=True).str.replace(r"[A-Za-z]*\s[A-Za-z]*\s[A-Za-z]*\s[A-Za-z]*\s\(WSL\)", "Linux", regex=True)
+data = data.reset_index()
+data["Languages"] = data["Languages"].str.split("\t").explode(True)
+data["Databases"] = data["Databases"].str.split("\t").explode(True)
+data["Gender"] = data["Gender"].str.split("\t").explode(True)
+data["Country"] = data["Country"].str.strip()
+data["Languages"] = data["Languages"].str.strip()
+data["Databases"] = data["Databases"].str.strip()
+data["Gender"] = data["Gender"].str.strip()
+data["OpSys"] = data["OpSys"].str.strip()
 data.to_csv(path_or_buf = save_path, index = False, mode = "w+")        
     
             

@@ -219,9 +219,9 @@ try:
             cleaned_list_of_os = []
             if "Windows" in str(row):
                 cleaned_list_of_os.append("Windows")
-            elif "MacOS" in str(row):
+            elif "Mac OS" in str(row):
                 cleaned_list_of_os.append("MacOS")
-            elif "Linux" in str(row):
+            elif "Linux" in str(row) or " Raspberry Pi" in str(row):
                 cleaned_list_of_os.append("Linux")
             if cleaned_list_of_os:
                 return ";".join(cleaned_list_of_os)
@@ -350,9 +350,9 @@ data["Country"] = data["Country"].apply(lambda row: standardized_country_name(ro
 data["Languages"] = data["Languages"].str.replace(";", "\t")
 data["Databases"] = data["Databases"].str.replace(";", "\t")
 data["Gender"] = data["Gender"].str.replace(";", "\t")
-data["Gender"] = data["Gender"].str.replace("Man", "Male").replace("Woman", "Female").replace("Transgender", "LGBTQ").replace("Non-binary, genderqueer, or gender non-conforming", "LGBTQ").replace("Gender non-conforming","LGBTQ").replace("Prefer not to say", "Other").replace("Prefer not to disclose", "Other").replace("Or, in your own words:", "Other")
+data["Gender"] = data["Gender"].str.replace("Man", "Male").str.replace("Woman", "Female").str.replace("Transgender", "LGBTQ").str.replace("Non-binary, genderqueer, or gender non-conforming", "LGBTQ").str.replace("Gender non-conforming","LGBTQ").str.replace("Prefer not to say", "Other").str.replace("Prefer not to disclose", "Other").str.replace("Or, in your own words:", "Other")
 data["OpSys"] = data["OpSys"].str.replace(r"BSD\/Unix|BSD", "BSD/UNIX", regex=True).str.replace(r"Linux-[A-Za-z]{1,}", "Linux", regex=True).str.replace(r"Other \(please specify\):", "Other", regex=True).str.replace(r"[A-Za-z]*\s[A-Za-z]*\s[A-Za-z]*\s[A-Za-z]*\s\(WSL\)", "Linux", regex=True)
-data = data.reset_index()
+#data = data.reset_index()
 data["Languages"] = data["Languages"].str.split("\t").explode(True)
 data["Databases"] = data["Databases"].str.split("\t").explode(True)
 data["Gender"] = data["Gender"].str.split("\t").explode(True)
@@ -361,6 +361,7 @@ data["Languages"] = data["Languages"].str.strip()
 data["Databases"] = data["Databases"].str.strip()
 data["Gender"] = data["Gender"].str.strip()
 data["OpSys"] = data["OpSys"].str.strip()
+data = data.drop(["index"], axis = 1)
 data.to_csv(path_or_buf = save_path, index = False, mode = "w+")        
     
             

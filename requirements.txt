@@ -1,0 +1,5 @@
+pandas
+pycountry
+faker
+matplotlib
+requests

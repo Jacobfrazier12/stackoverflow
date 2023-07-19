@@ -11,8 +11,6 @@
 # Approach 
 - I wanted to fully automate the retrieval, extraction, cleaning, and loading processes. I discovered that each CSV file could be retrieved with a URL with the year appended to it; which downloaded a Zip Archive, which itself contained the survey results. 
 
-- After extracting the survey results, I began working on combining the data from each survey. This proved difficult because the surveys have evolved over the years. Some CSV files required more cleaning and transformation than others.
-
 1. My first challenge was actually reading the CSV files. Not all files were encoded with UTF-8, so I had to determine which encoding standard each file was using. After that, I then encoded the data using UTF-8 and saved it to a new CSV file which was titled {year}.csv, with "year" being the year the survey was conducted.
 
 2. My second challenge was analyzing each survey to prepare my strategy for cleaning and transforming the data. Over the years, StackOverflow has been refining the survey.
@@ -32,11 +30,11 @@
 # Results at a glance
 - The most popular Language year-over-year is JavaScript.
 
-- The most popular database software year-over-year is MySQL
+- The most popular database software year-over-year is MySQL.
 
 - The country with the most respondents year-over-year is the United States.
 
 - Majority of respondents are male.
 
-- Majority of respondents use Windows or various forms of Linux, including Windows Subsystems for Linux(WSL) 
+- Majority of respondents use Windows or various forms of Linux, including Windows Subsystems for Linux(WSL), for their work.
 

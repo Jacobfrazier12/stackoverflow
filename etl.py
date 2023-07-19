@@ -11,7 +11,7 @@ import chardet
 from numpy import nan
 from fake_useragent import FakeUserAgent
 import pycountry
-#This section downloads all the StackOverflow survey results.
+#This section downloads all the StackOverflow survey results and extracts the Zip Archive.
 ua = FakeUserAgent()
 for year in range(2017, 2023):
     try:
@@ -38,6 +38,7 @@ for year in range(2017, 2023):
     except IOError as e:
         pass
 
+#This section determines the encoding standard used by each survey so that Pandas knows how to read it. Each survey is then saved using the UTF-8 standard.
 encoding = None
 for dir in os.listdir(os.getcwd()):
     if re.match(r"[0-9]{4}", dir):
@@ -48,45 +49,28 @@ for dir in os.listdir(os.getcwd()):
                         with open(os.path.join(root, file), "rb") as f:
                             encoding = chardet.detect(f.read())["encoding"]
                              
-                        if int(dir) == 2013:
-                            data = read_csv(os.path.join(root, file), encoding=encoding, low_memory = False)
-                            data.to_csv(path_or_buf = os.path.join(os.getcwd(), dir+".csv"), mode="w+", encoding="utf-8", index=False)
-                            rmtree(os.path.join(os.getcwd(), dir))    
-                        if int(dir) == 2014:
-                            data = read_csv(os.path.join(root, file), encoding=encoding, low_memory = False)
-                            data.to_csv(path_or_buf = os.path.join(os.getcwd(), dir+".csv"), mode="w+", encoding="utf-8", index=False)
-                            rmtree(os.path.join(os.getcwd(), dir))    
-                        if int(dir) == 2015:
-                            data = read_csv(os.path.join(root, file), encoding=encoding, low_memory = False, skiprows=1)
-                            data.to_csv(path_or_buf = os.path.join(os.getcwd(), dir+".csv"), mode="w+", encoding="utf-8", index=False)
-                            rmtree(os.path.join(os.getcwd(), dir))    
-                        if int(dir) == 2016:
-                            data = read_csv(os.path.join(root, file), encoding=encoding, low_memory = False)
-                            data = data.drop(["Unnamed: 0"], axis=1)
-                            data.to_csv(path_or_buf = os.path.join(os.getcwd(), dir+".csv"), mode="w+", encoding="utf-8", index=False)
-                            rmtree(os.path.join(os.getcwd(), dir))    
                         if int(dir) == 2017:
-                            data = read_csv(os.path.join(root, file), encoding=encoding, low_memory = False)
+                            data = read_csv(os.path.join(root, file), encoding = encoding, low_memory = False)
                             data.to_csv(path_or_buf = os.path.join(os.getcwd(), dir+".csv"), mode="w+", encoding="utf-8", index=False)
                             rmtree(os.path.join(os.getcwd(), dir))       
                         if int(dir) == 2018:
-                            data = read_csv(os.path.join(root, file), encoding=encoding, low_memory = False)
+                            data = read_csv(os.path.join(root, file), encoding = encoding, low_memory = False)
                             data.to_csv(path_or_buf = os.path.join(os.getcwd(), dir+".csv"), mode="w+", encoding="utf-8", index=False)
                             rmtree(os.path.join(os.getcwd(), dir))    
                         if int(dir) == 2019:
-                            data = read_csv(os.path.join(root, file), encoding=encoding, low_memory = False)
+                            data = read_csv(os.path.join(root, file), encoding = encoding, low_memory = False)
                             data.to_csv(path_or_buf = os.path.join(os.getcwd(), dir+".csv"), mode="w+", encoding="utf-8", index=False)
                             rmtree(os.path.join(os.getcwd(), dir))    
                         if int(dir) == 2020:
-                            data = read_csv(os.path.join(root, file), encoding=encoding, low_memory = False)
+                            data = read_csv(os.path.join(root, file), encoding = encoding, low_memory = False)
                             data.to_csv(path_or_buf = os.path.join(os.getcwd(), dir+".csv"), mode="w+", encoding="utf-8", index=False)
                             rmtree(os.path.join(os.getcwd(), dir))       
                         if int(dir) == 2021:
-                            data = read_csv(os.path.join(root, file), encoding=encoding, low_memory = False)
+                            data = read_csv(os.path.join(root, file), encoding = encoding, low_memory = False)
                             data.to_csv(path_or_buf = os.path.join(os.getcwd(), dir+".csv"), mode="w+", encoding="utf-8", index=False)
                             rmtree(os.path.join(os.getcwd(), dir))         
                         if int(dir) == 2022:
-                            data = read_csv(os.path.join(root, file), encoding=encoding, low_memory = False)
+                            data = read_csv(os.path.join(root, file), encoding = encoding, low_memory = False)
                             data.to_csv(path_or_buf = os.path.join(os.getcwd(), dir+".csv"), mode="w+", encoding="utf-8", index=False)
                             rmtree(os.path.join(os.getcwd(), dir))        
                     except UnicodeDecodeError as e:
@@ -112,11 +96,7 @@ try:
             if cleaned_list_of_os:
                 return ";".join(cleaned_list_of_os)
             else: return nan
-                
-
-
-
-
+        #Extracts and cleans the 2017 survey.
         if year == 2017:
             data = None
             if os.path.exists(os.path.join(os.getcwd(), str(year)+".csv")):
@@ -133,7 +113,7 @@ try:
                 os.remove(os.path.join(os.getcwd(), str(year)+".csv"))
         
        
-    
+        #Extracts and cleans the 2018 survey.
         if year == 2018:
             data = None
             if os.path.exists(os.path.join(os.getcwd(), str(year)+".csv")):
@@ -149,7 +129,7 @@ try:
             if os.path.exists(os.path.join(os.getcwd(), str(year)+".csv")):
                 os.remove(os.path.join(os.getcwd(), str(year)+".csv"))
             
-        
+        #Extracts and cleans the 2019 survey.
         if year == 2019:
             data = read_csv(filepath_or_buffer = os.path.join(os.getcwd(), str(year)+".csv"), low_memory=False)
             data = data.loc[:, ["OpSys", "DatabaseWorkedWith", "LanguageWorkedWith", "Country", "Gender"]]
@@ -163,7 +143,7 @@ try:
             if os.path.exists(os.path.join(os.getcwd(), str(year)+".csv")):
                 os.remove(os.path.join(os.getcwd(), str(year)+".csv"))
             
-        
+        #Extracts and cleans the 2020 survey.
         if year == 2020:
             data = None
             if os.path.exists(os.path.join(os.getcwd(), str(year)+".csv")):
@@ -179,7 +159,7 @@ try:
             if os.path.exists(os.path.join(os.getcwd(), str(year)+".csv")):
                 os.remove(os.path.join(os.getcwd(), str(year)+".csv"))
             
-        
+        #Extracts and cleans the 2021 survey.
         if year == 2021:
             data = None
             if os.path.exists(os.path.join(os.getcwd(), str(year)+".csv")):
@@ -195,7 +175,7 @@ try:
             if os.path.exists(os.path.join(os.getcwd(), str(year)+".csv")):
                 os.remove(os.path.join(os.getcwd(), str(year)+".csv"))
             
-        
+        #Extracts and cleans the 2022 survey.
         if year == 2022:
             data = None
             if os.path.exists(os.path.join(os.getcwd(), str(year)+".csv")):
@@ -216,6 +196,7 @@ except FileNotFoundError as e:
 except AttributeError as e:
     print(e)            
 
+#This function attempts to ensure the naming convention for all countries is consistent throughout the surveys.
 def standardized_country_name(row):
     try:
         country = pycountry.countries.lookup(str(row)) 
@@ -224,23 +205,26 @@ def standardized_country_name(row):
         return row
     except AttributeError as e:
         return row
-
+#Each survey is combined into one dataset.
 data = concat(data_list)
-data = data[to_numeric(data["Languages"], errors="coerce").isna()] 
 data["Country"] = data["Country"].apply(lambda row: standardized_country_name(row))
+#Replaces all occurrences of "Man" with "Male," "Woman" with "Female," and and anything not conforming to binary gender identification to "LGBTQ." Any constructive or prefer not to say responses were replaced with "Other." Any trailing whitespace is removed.
 data["Gender"] = data["Gender"].str.replace("Man", "Male").str.replace("Woman", "Female").str.replace("Transgender", "LGBTQ").str.replace("Non-binary, genderqueer, or gender non-conforming", "LGBTQ").str.replace("Gender non-conforming","LGBTQ").str.replace("Prefer not to say", "Other").str.replace("Prefer not to disclose", "Other").str.replace("Or, in your own words:", "Other").str.strip()
+#Uses Regular Expresses to standardize and clean the Operating System naming conventions.
+data["OpSys"] = data["OpSys"].str.replace(r"BSD\/Unix|BSD", "BSD/UNIX", regex=True).str.replace(r"Linux-[A-Za-z]{1,}", "Linux", regex=True).str.replace(r"Other \(please specify\):", "Other", regex=True).str.replace("macOS", "MacOS")
+#Replaces all field delimiters with a tab space.
 data["Gender"] = data["Gender"].str.replace(";", "\t")
-data["OpSys"] = data["OpSys"].str.replace(r"BSD\/Unix|BSD", "BSD/UNIX", regex=True).str.replace(r"Linux-[A-Za-z]{1,}", "Linux", regex=True).str.replace(r"Other \(please specify\):", "Other", regex=True).str.replace("macOS", "MacOS")#.str.replace(r"[A-Za-z]*\s[A-Za-z]*\s[A-Za-z]*\s[A-Za-z]*\s\(WSL\)", "Linux", regex=True)
 data["Languages"] = data["Languages"].str.replace(";", "\t")
 data["Databases"] = data["Databases"].str.replace(";", "\t")
 data["Gender"] = data["Gender"].str.replace(";", "\t")
 data["OpSys"] = data["OpSys"].str.replace(";", "\t")
+#This section fills missing values; separates all values in each field with the tab delimiter; uses apply to convert the field's value, which is now a list of values, to a set of values which ensures there are no duplicates; converts the set back to a list, and recombines each item in the list using the tab separator. 
 data["Gender"] = data["Gender"].fillna(str(nan)).str.split("\t").apply(set).apply(list).apply("\t".join)
 data["Languages"] = data["Languages"].fillna(str(nan)).str.split("\t").apply(set).apply(list).apply("\t".join)
 data["Databases"] = data["Databases"].fillna(str(nan)).str.split("\t").apply(set).apply(list).apply("\t".join)
 data["OpSys"] = data["OpSys"].fillna(str(nan)).str.split("\t").apply(set).apply(list).apply("\t".join)
 data.to_csv(path_or_buf = save_path, index = False, mode = "w+")  
-
+#This section uses a for loop to iterate through each field that contains a tab delimiter; converts the field to a list; takes each individual value and places it in its own row; removes any trailing whitespaces; determines the number of occurrences for each value; and saves the resulting pivot table to a file. The original data being re-read during each iteration to ensure the previous transformation doesn't influence the next field's pivot table. 
 cols = ["Languages", "Databases", "Country", "Gender", "OpSys"]
 paths = [languages_path, database_path, country_path, gender_path, opsys_path]
 

@@ -15,7 +15,7 @@
 
 1. My first challenge was actually reading the CSV files. Not all files were encoded with UTF-8, so I had to determine which encoding standard each file was using. After that, I then encoded the data using UTF-8 and saved it to a new CSV file which was titled {year}.csv, with "year" being the year the survey was conducted.
 
-2. My second challenge was analyzing each survey to prepare my strategy for cleaning and transforming the data. Over the years, StackOverflow has been refining the survey. The early years of the survey 
+2. My second challenge was analyzing each survey to prepare my strategy for cleaning and transforming the data. Over the years, StackOverflow has been refining the survey.
 
 
 

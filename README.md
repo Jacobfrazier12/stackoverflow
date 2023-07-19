@@ -6,7 +6,7 @@
 
 # License
 
-**You are free to distribute, copy, or modify this software, with or without credit towards the author; however, the author bares no responsibility for any damages sustained while using this software. Also, the software is offered "as-is."**
+**You are free to distribute, copy, or modify this software, with or without credit towards the author; however, the author bares no responsibility for any damages sustained while using this software. Also, the software is offered "as is."**
 
 # Approach 
 - I wanted to fully automate the retrieval, extraction, cleaning, and loading processes. I discovered that each CSV file could be retrieved with a URL with the year appended to it; which downloaded a Zip Archive, which itself contained the survey results. 

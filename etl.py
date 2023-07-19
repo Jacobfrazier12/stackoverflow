@@ -224,7 +224,7 @@ data["Languages"] = data["Languages"].fillna(str(nan)).str.split("\t").apply(set
 data["Databases"] = data["Databases"].fillna(str(nan)).str.split("\t").apply(set).apply(list).apply("\t".join)
 data["OpSys"] = data["OpSys"].fillna(str(nan)).str.split("\t").apply(set).apply(list).apply("\t".join)
 data.to_csv(path_or_buf = save_path, index = False, mode = "w+")  
-#This section uses a for loop to iterate through each field that contains a tab delimiter; converts the field to a list; takes each individual value and places it in its own row; removes any trailing whitespaces; determines the number of occurrences for each value; and saves the resulting pivot table to a file. The original data being re-read during each iteration to ensure the previous transformation doesn't influence the next field's pivot table. 
+#This section uses a for loop to iterate through each field that contains a tab delimiter; converts the field to a list; takes each individual value and places it in its own row; removes any trailing whitespaces; determines the number of occurrences for each value; and saves the first 10 values in the resulting pivot table to a file. The original data being re-read during each iteration to ensure the previous transformation doesn't influence the next field's pivot table. 
 cols = ["Languages", "Databases", "Country", "Gender", "OpSys"]
 paths = [languages_path, database_path, country_path, gender_path, opsys_path]
 

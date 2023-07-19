@@ -1,6 +1,6 @@
 # Overview  
 
-- This is a project that downloads and extracts every StackOverflow Developer survey from 2017-2022. To view the results, please see the following dashboard: [Insights Dashboard](https://public.tableau.com/app/profile/jacob5151/viz/StackOverflowDeveloperSurveyResults2017-2022/StackOverflowDashboard)
+- This is a project that downloads and extracts every StackOverflow Developer survey from 2017-2022. To view the results, please see the following dashboard: [Insights Dashboard](https://public.tableau.com/app/profile/jacob5151/viz/StackOverflowDeveloperSurveyResults2017-2022/StackOverflowDashboard).
 
 - I've been wondering what the most popular tools are that respondents use. I was also curious about the gender makeup of survey respondents and where they live. I already had preconceived answers that were right, but I wanted quantifiable data that backed up my answers. The StackOverflow Annual Developer survey provided data that I was able to use. 
 
